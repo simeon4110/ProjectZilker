@@ -1,5 +1,7 @@
 package ProjectZilker.Models;
 
-public abstract class Wiki extends Sub {
-
+public abstract class Wiki {
+    public Wiki() {
+        //
+    }
 }

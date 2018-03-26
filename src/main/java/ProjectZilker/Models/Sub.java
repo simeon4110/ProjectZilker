@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class Sub {
-    private String id;
+    private final UUID id = UUID.randomUUID();
     private String name;
     private String description;
 
@@ -14,7 +14,6 @@ public class Sub {
     private ArrayList<User> contributors;
 
     public Sub(String name, String description, User creator) {
-        this.id = newKey();
         this.name = name;
         this.description = description;
         
@@ -31,8 +30,8 @@ public class Sub {
         new Post(user, title, content, NSFW, spoiler, this.id);
     }
 
-    private String newKey() {
-        return UUID.randomUUID().toString();
-    }
 
+    public UUID getId() {
+        return id;
+    }
 }

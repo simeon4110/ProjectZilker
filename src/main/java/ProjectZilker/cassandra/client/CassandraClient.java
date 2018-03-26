@@ -1,17 +1,32 @@
 package ProjectZilker.cassandra.client;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import ProjectZilker.Models.User;
+import ProjectZilker.cassandra.client.repository.KeyspaceRepository;
+import ProjectZilker.cassandra.client.repository.UserRepository;
 import com.datastax.driver.core.Session;
 
-public class CassandraClient {
-    private static final Logger LOG = LoggerFactory.getLogger(CassandraClient.class);
+import java.util.UUID;
 
-    public static void main(String[] args) {
-        CassandraConnector connector = new CassandraConnector();
-        connector.connect("127.0.0.1", null);
+public abstract class CassandraClient {
+    private static CassandraConnector connector = new CassandraConnector();
+
+    public static void saveUser(User user) {
+        connector.connect("127.0.0.1", 9142);
         Session session = connector.getSession();
+        KeyspaceRepository keyspaceRepository = new KeyspaceRepository(session);
+        keyspaceRepository.createKeyspace("users", "SimpleStrategy", 1);
+        keyspaceRepository.useKeyspace("users");
+        UserRepository repository = new UserRepository(session);
+        repository.addUser(user);
+    }
 
+    public static User getUser(UUID userID) {
+        connector.connect("127.0.0.1", 9142);
+        Session session = connector.getSession();
+        KeyspaceRepository keyspaceRepository = new KeyspaceRepository(session);
+        keyspaceRepository.createKeyspace("users", "SimpleStrategy", 1);
+        keyspaceRepository.useKeyspace("users");
+        UserRepository repository = new UserRepository(session);
+        return repository.getUser(userID);
     }
 }

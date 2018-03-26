@@ -8,6 +8,8 @@ import com.datastax.driver.core.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.datastax.driver.extras.codecs.joda.InstantCodec;
+
 
 public class CassandraConnector {
     private static final Logger LOG = LoggerFactory.getLogger(CassandraConnector.class);
@@ -21,6 +23,7 @@ public class CassandraConnector {
             builder.withPort(port);
         }
         cluster = builder.build();
+        cluster.getConfiguration().getCodecRegistry().register(InstantCodec.instance);
 
         Metadata metadata = cluster.getMetadata();
         LOG.info("Cluster name: " + metadata.getClusterName());

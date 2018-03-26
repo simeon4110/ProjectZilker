@@ -1,45 +1,39 @@
 package ProjectZilker.Models;
 
-import java.util.ArrayList;
+import ProjectZilker.cassandra.client.CassandraClient;
+import com.datastax.driver.mapping.annotations.Column;
+import com.datastax.driver.mapping.annotations.PartitionKey;
+import com.datastax.driver.mapping.annotations.Table;
+import org.joda.time.DateTime;
 
+import java.util.UUID;
+
+@Table(keyspace = "users", name = "data")
 public class User {
-    private String id;
+    @PartitionKey
+    @Column
+    private final UUID id;
+    @Column
     private String name;
-
-    private ArrayList<User> friends;
-    private ArrayList<User> blocked;
-    private ArrayList<User> trusted;
+    @Column
+    private String timeStamp;
 
     public User(String name) {
+        this.id = UUID.randomUUID();
+        this.timeStamp = DateTime.now().toString();
         this.name = name;
 
-        this.friends = new ArrayList<User>();
-        this.blocked = new ArrayList<User>();
-        this.trusted = new ArrayList<User>();
+        CassandraClient.saveUser(this);
     }
 
-    public void addFriend(User user) {
-        this.friends.add(user);
+    public User(UUID id, String name, String timeStamp) {
+        this.id = id;
+        this.name = name;
+        this.timeStamp = timeStamp;
     }
 
-    public void addBlocked(User user) {
-        this.blocked.add(user);
-    }
+    public void get() {
 
-    public void addTrusted(User user) {
-        this.trusted.add(user);
-    }
-
-    public void removeFriend(User user) {
-        this.friends.remove(user);
-    }
-
-    public void removeBlocked(User user) {
-        this.blocked.remove(user);
-    }
-
-    public void removeTrusted(User user) {
-        this.trusted.remove(user);
     }
 
     public String getName() {
@@ -50,5 +44,11 @@ public class User {
         this.name = name;
     }
 
+    public String getTimeStamp() {
+        return timeStamp;
+    }
 
+    public UUID getId() {
+        return id;
+    }
 }
